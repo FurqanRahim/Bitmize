@@ -1,0 +1,40 @@
+
+import savedURLService from "../services/url.services.js"
+import Url from "../models/url.model.js"
+
+
+export function saveURL(req,res){
+    
+    const url = req.body['url']
+    console.log(url)
+    const shortURL = savedURLService(url)
+    return res.send(process.env.APP_URL+shortURL)
+
+}
+
+export async function redirectURL(req, res) {
+    try {
+        const { short_url } = req.params;
+       
+        
+       
+        const urlFind = await Url.findOne({ short_url });
+        console.log("urlFind =>", urlFind);
+        
+        if (urlFind) {
+           
+            res.redirect(urlFind.original_url);
+        } else {
+            res.status(404).send({
+                status: 404,
+                message: 'URL NOT FOUND'
+            });
+        }
+    } catch (error) {
+        console.error("Error in redirectURL:", error);
+        res.status(500).send({
+            status: 500,
+            message: 'Internal Server Error'
+        });
+    }
+}
