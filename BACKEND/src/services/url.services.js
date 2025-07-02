@@ -1,15 +1,15 @@
 import generateShortURL from "../utils/helper.js";
-import Url from "../models/url.model.js";
-
+import {saveURLDAO} from "../Dao/url.dao.js";
 
 export default function savedURLService(url){
+    try{
+        
+        const shortURL=generateShortURL();
+        saveURLDAO(shortURL,url)
+        return shortURL
 
-    const shortURL=generateShortURL();
-    const url_save = new Url({
-        original_url:url,
-        short_url:shortURL
-    })
-    url_save.save()
-    return shortURL
+    }catch(err){
+        console.log(err)
+    }
 
 }

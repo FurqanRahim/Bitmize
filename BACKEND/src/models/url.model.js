@@ -11,7 +11,7 @@ const urlSchema = new mongoose.Schema({
         unique: true,
         index: true,
     },
-    click: {
+    clicks: { 
         type: Number,
         required: true,
         default: 0

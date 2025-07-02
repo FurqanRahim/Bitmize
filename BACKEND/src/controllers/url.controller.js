@@ -4,11 +4,15 @@ import Url from "../models/url.model.js"
 
 
 export function saveURL(req,res){
+    try{
     
-    const url = req.body['url']
-    console.log(url)
-    const shortURL = savedURLService(url)
-    return res.send(process.env.APP_URL+shortURL)
+        const url = req.body['url']
+        console.log(url)
+        const shortURL = savedURLService(url)
+        return res.send(process.env.APP_URL+shortURL)
+    }catch(err){
+        console.log(err)
+    }
 
 }
 
@@ -18,7 +22,7 @@ export async function redirectURL(req, res) {
        
         
        
-        const urlFind = await Url.findOne({ short_url });
+        const urlFind = await Url.findOneAndUpdate({ short_url }, {$inc:{clicks:1}},  { new: true });
         console.log("urlFind =>", urlFind);
         
         if (urlFind) {
