@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from 'react'
+import Post from "../api/url.api.js";
 
 const URLform = () => {
   const [url, setUrl] = useState('')
@@ -21,8 +22,10 @@ const URLform = () => {
     setTimeout(async () => {
       // Generate a random short URL (in a real app, this would come from your backend)
       
-    const response = await axios.post('http://localhost:5000/api/create', { url })
-    setShortUrl(response.data) // Assuming your backend returns the short URL in respons
+    
+    const response = await Post({url})
+    
+    setShortUrl(response.data.url_short) // Assuming your backend returns the short URL in respons
       setIsLoading(false)
     }, 1000)
   }
