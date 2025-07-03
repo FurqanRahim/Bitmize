@@ -1,4 +1,4 @@
-
+import axios from "axios";
 import React, { useState } from 'react'
 
 const URLform = () => {
@@ -7,7 +7,7 @@ const URLform = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  (e) => {
     e.preventDefault()
     
     if (!url) {
@@ -18,10 +18,11 @@ const URLform = () => {
     // Simulate API call
     setIsLoading(true)
     
-    setTimeout(() => {
+    setTimeout(async () => {
       // Generate a random short URL (in a real app, this would come from your backend)
-      const randomString = Math.random().toString(36).substring(2, 8)
-      setShortUrl(`https://short.url/${randomString}`)
+      
+    const response = await axios.post('http://localhost:5000/api/create', { url })
+    setShortUrl(response.data) // Assuming your backend returns the short URL in respons
       setIsLoading(false)
     }, 1000)
   }
@@ -46,7 +47,7 @@ const URLform = () => {
             type="url"
             id="url"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 input-focus"
-            placeholder="https://example.com/"
+            placeholder="https://www.example.com/"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             required
