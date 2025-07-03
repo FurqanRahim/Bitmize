@@ -9,7 +9,7 @@ export function saveURL(req,res){
         const url = req.body['url']
         console.log(url)
         const shortURL = savedURLService(url)
-        return res.send(process.env.APP_URL+shortURL)
+        return res.status(200).json({url_short:process.env.APP_URL+shortURL})
     }catch(err){
         console.log(err)
     }
