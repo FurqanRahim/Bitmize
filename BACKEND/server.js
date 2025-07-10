@@ -3,8 +3,9 @@ import { nanoid } from "nanoid"
 import dotenv from "dotenv";
 dotenv.config('./.env')
 import connectionDB from "./src/config/mongodb.config.js";
-import router from "./src/routes/url.routes.js";
+import url_route from "./src/routes/url.routes.js";
 import cors from "cors";
+import auth_route from "./src/routes/auth.route.js";
 
 
 const PORT = 5000
@@ -17,7 +18,8 @@ app.use(cors({
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
-app.use(router);
+app.use(url_route);
+app.use(auth_route)
 
 
 app.listen(PORT,()=>{
