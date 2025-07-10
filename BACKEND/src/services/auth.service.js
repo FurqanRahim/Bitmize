@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import {emailExistDAO,nameExistDAO,userCreatedDAO} from "../Dao/auth.dao.js";
 import bcrypt from "bcrypt"
 import {signToken} from "../utils/helper.js"
+import cookiesOption from "../utils/cookiesOption.js";
 
 
 
@@ -28,14 +29,16 @@ const registerUserService = async (name,email,password) => {
 const loginUserService = async (email,password) => {
     try{
         const user = await User.findOne({email});
-        
-        
+        if(!user){
+            return "Invalid Credentials"
+        }
         const isMatch = await bcrypt.compare(password, user.password);
-        if(!user || !isMatch){
+        if(!isMatch){
             return "Invalid Credentials"
         }
         const token = signToken({id: user._id})
-        return {message:"Login Successfully",token}
+        res.cookie("accessToken",userInfo.token,cookiesOption)
+        return "Login Successfully"
     }catch(err){
         console.log(err)
     }
