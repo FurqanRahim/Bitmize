@@ -1,7 +1,7 @@
-import instance from "./api.instance.js";
+import axiosInstance from "./api.instance.js";
 
 const Post = (url) =>{
-    return instance.post('/api/create',url)
+    return axiosInstance.post('/url/create',url)
 }
 
 export default Post;

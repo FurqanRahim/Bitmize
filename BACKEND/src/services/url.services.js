@@ -1,10 +1,9 @@
 import generateShortURL from "../utils/helper.js";
 import {saveURLDAO} from "../Dao/url.dao.js";
 
-export default function savedURLService(url){
+export default function savedURLService(url,slug){
     try{
-        
-        const shortURL=generateShortURL();
+        const shortURL = slug || generateShortURL();
         saveURLDAO(shortURL,url)
         return shortURL
 

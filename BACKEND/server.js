@@ -6,6 +6,7 @@ import connectionDB from "./src/config/mongodb.config.js";
 import url_route from "./src/routes/url.routes.js";
 import cors from "cors";
 import auth_route from "./src/routes/auth.route.js";
+import cookieParser from "cookie-parser";
 
 
 const PORT = 5000
@@ -15,8 +16,10 @@ app.use(cors({
   origin: true, // Reflects the request origin
   credentials: true // If you need cookies/auth
 }))
+
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+app.use(cookieParser())
 
 app.use(url_route);
 app.use(auth_route)
