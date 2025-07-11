@@ -40,9 +40,9 @@ const userCreatedDAO = async (name,email,password) => {
         });
         await newUser.save();
         
-        const token = signToken({id: newUser._id})
         
-        return {message:"User created Successfully",token}   
+        
+        return "User created Successfully"   
         
     }catch(err){
         console.log(err)

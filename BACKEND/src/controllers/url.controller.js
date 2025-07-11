@@ -55,29 +55,66 @@ export async function saveURL(req, res) {
 export async function redirectURL(req, res) {
     try {
         const { short_url } = req.params;
-        
-        console.log("parameter find 111 => ", short_url);
-        
-        const urlFind = await Url.findOneAndUpdate(
-            { short_url }, 
-            { $inc: { clicks: 1 } },  
-            { new: true }
-        );
-        
-        console.log("URL FIND 111=> ", urlFind);
-        
-        if (urlFind) {
-            return res.redirect(urlFind.original_url);
-        } else {
-            return res.status(404).send({
-                message: 'URL NOT FOUND'
+
+        // Validate short_url parameter
+        if (!short_url || typeof short_url !== 'string' || short_url.trim().length === 0) {
+            console.error('Invalid short URL parameter:', short_url);
+            return res.status(400).json({
+                status: 400,
+                message: 'Invalid short URL parameter',
             });
         }
+
+        // Add protocol if missing from original URL
+        const ensureProtocol = (url) => {
+            if (!/^https?:\/\//i.test(url)) {
+                return `http://${url}`;
+            }
+            return url;
+        };
+
+        const urlFind = await Url.findOneAndUpdate(
+            { short_url: short_url.trim() }, // Trim whitespace
+            { $inc: { clicks: 1 } },
+            { 
+                new: true,
+                maxTimeMS: 5000 // Timeout after 5 seconds
+            }
+        );
+
+        console.log("Redirect attempt - Short URL:", short_url, "Found:", !!urlFind);
+        
+        if (urlFind) {
+            const destinationUrl = ensureProtocol(urlFind.original_url);
+            console.log(`Redirecting to: ${destinationUrl}`);
+            return res.redirect(302, destinationUrl);
+        }
+
+        console.warn('Short URL not found:', short_url);
+        return res.status(404).json({
+            status: 404,
+            message: 'URL not found',
+            suggestion: 'Check if the short URL is correct'
+        });
+        
     } catch (error) {
-        console.error("Error in redirectURL:", error);
-        return res.status(500).send({
+        console.error("Redirect error:", {
+            error: error.message,
+            stack: error.stack,
+            params: req.params
+        });
+
+        if (error.name === 'MongoTimeoutError') {
+            return res.status(503).json({
+                status: 503,
+                message: 'Service temporarily unavailable',
+            });
+        }
+
+        return res.status(500).json({
             status: 500,
-            message: 'Internal Server Error'
+            message: 'Internal server error',
+            requestId: req.id // If you have request IDs
         });
     }
 }

@@ -21,11 +21,31 @@ const signToken = (payload) => {
 }
 
 const verifyToken = (token) => {
+  // Basic validation before JWT verification
+  if (!token || typeof token !== 'string') {
+    console.error("Invalid token format");
+    return null;
+  }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Validate required token fields
+    if (!decoded?.id || !decoded?.iat) {
+      console.error("Token missing required fields");
+      return null;
+    }
+    
     return decoded;
   } catch (err) {
-    console.error("Invalid token:", err.message);
+    // Specific error handling
+    if (err.name === 'TokenExpiredError') {
+      console.error("Token expired:", err.expiredAt);
+    } else if (err.name === 'JsonWebTokenError') {
+      console.error("Malformed token:", err.message);
+    } else {
+      console.error("Token verification error:", err.message);
+    }
     return null;
   }
 };

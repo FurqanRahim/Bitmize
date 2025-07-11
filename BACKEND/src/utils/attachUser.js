@@ -1,36 +1,55 @@
+
+
 import { verifyToken } from "./helper.js";
 import User from "../models/user.model.js";
 
 const attachUser = async (req, res, next) => {
-    const token = req.cookies.accessToken;
-    
-    
-    if (!token) {
-        return next();
-    }
-    
-    const decoded = verifyToken(token);
-    
-    
-    if (!decoded) {
-        return next();
-    }
-
     try {
-        const user = await User.findById(decoded.id).exec();
-       
+        // Clean previous user data if exists
+        delete req.user;
         
-        if (user) {
-            req.user = user;
-           
+        // Get token from cookies
+        const token = req.cookies?.accessToken;
+        
+        if (!token) {
+            console.log("No access token provided");
+            return next(); // Continue without authentication
+        }
+
+        // Basic token format validation
+        if (typeof token !== 'string' || !token.split('.').length === 3) {
+            console.log("Malformed token format");
             return next();
-        } else {  
+        }
+
+        // Verify token
+        const decoded = verifyToken(token);
+        if (!decoded?.id) { // Assuming your JWT has an 'id' field
+            console.log("Invalid or expired token");
             return next();
-        }      
-    } catch (err) {
-        console.error(err);
+        }
+
+        // Fetch user
+        const user = await User.findById(decoded.id)
+            .select('-password -__v') // Exclude sensitive fields
+            .lean(); // Return plain JS object
+
+        if (!user) {
+            console.log("User not found in database");
+            return next();
+        }
+
+        // Attach sanitized user data
+        req.user = user;
+        return next();
+        
+    } catch (error) {
+        console.error("Authentication middleware error:", error);
+        // Consider returning 401 for critical errors
         return next();
     }
 }
+
+
 
 export default attachUser;
