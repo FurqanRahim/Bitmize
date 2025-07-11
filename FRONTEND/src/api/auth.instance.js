@@ -1,0 +1,34 @@
+import axiosInstance from "./api.instance";
+
+const registerUser = async (name, email, password) => {
+    try {
+        const response = await axiosInstance.post('/user/create', {name, email, password});
+        return response;
+    } catch (error) {
+        // Handle error here or throw it to be handled by the calling component
+        throw error;
+    }
+}
+
+const loginUser = async (email, password) => {
+    try {
+        const response = await axiosInstance.post('/user/login', {email, password});
+        console.log(response.data.message);
+        return response;
+    } catch (error) {
+        // Handle error here or throw it
+        throw error;
+    }
+}
+
+const logoutUser = async (id) => {
+    try {
+        const response = await axiosInstance.get('/user/logout', {id});
+        return response;
+    } catch (error) {
+        // Handle error here or throw it
+        throw error;
+    }
+}
+
+export {registerUser, loginUser, logoutUser};
