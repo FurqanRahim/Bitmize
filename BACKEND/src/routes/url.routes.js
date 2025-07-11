@@ -8,4 +8,7 @@ url_route.post('/api/url/create',saveURL)
 
 url_route.get('api/url/:short_url',redirectURL);
 
+url_route.get('/api/:short_url',redirectURL);
+
 export default url_route;
+

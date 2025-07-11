@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 import attachUser from "./src/utils/attachUser.js";
 
 
-const PORT = 5000
+const PORT = process.env.PORT
 const app = express()
 
 app.use(cors({
