@@ -1,4 +1,5 @@
 import { registerUserService,loginUserService } from "../services/auth.service.js";
+import cookiesOption from "../utils/cookiesOption.js";
 
 
 const register_user = async  (req, res) => {
@@ -8,9 +9,15 @@ const register_user = async  (req, res) => {
 };
 
 const login_user =async (req, res) => {
-     const {email, password } = req.body;
-     const info =await loginUserService(email, password);
-     console.log(info)
+    try{
+             const {email, password } = req.body;
+             const token =await loginUserService(email, password);
+             res.cookie("accessToken",token,cookiesOption)
+             res.status(200).json({message:"Login Successfully"})
+
+    }catch(err){
+        console.log(err)
+    }
 
 
     

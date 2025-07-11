@@ -7,12 +7,12 @@ export function saveURL(req,res){
     try{
     
         const url = req.body.url;
+        console.log(req.user)
         if(req.body.slug){
                     const slug = req.body.slug
                     const shortURL = savedURLService(url,slug)
-        }else{
-                    const shortURL = savedURLService(url)
         }
+        const shortURL = savedURLService(url)
         return res.status(200).json({url_short:process.env.APP_URL+shortURL})
     }catch(err){
         console.log(err)

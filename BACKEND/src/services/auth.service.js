@@ -37,8 +37,8 @@ const loginUserService = async (email,password) => {
             return "Invalid Credentials"
         }
         const token = signToken({id: user._id})
-        res.cookie("accessToken",userInfo.token,cookiesOption)
-        return "Login Successfully"
+        
+        return token
     }catch(err){
         console.log(err)
     }
