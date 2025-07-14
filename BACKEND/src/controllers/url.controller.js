@@ -5,47 +5,58 @@ import Url from "../models/url.model.js"
 
 export async function saveURL(req, res) {
     try {
+        
         const url = req.body.url;
         const slug = req.body.slug;
         const userId = req.user?._id?.toString(); // Convert ObjectId to string if it exists
-        
-        
-        
+
+
+
+
         // Case 1: Both slug and user ID are present
         if (slug && userId) {
-            const shortURL =await  savedURLService(url, slug, userId);
-            if (shortURL == 'Short URL already exists'){
-                return res.status(400).json({ error: "Short URL already exists" });
+            const shortURL = await savedURLService(url, slug, userId);
+            if (shortURL.status == 200) {
+                return res.json({ message:shortURL.message,status:shortURL.status,url:process.env.APP_URL+shortURL.url });
+
             }
-            return res.status(200).json({ url_short: process.env.APP_URL + shortURL });
+            return res.json({ message: "Short URL already exists",status:409 });
+
         }
-        
+
         // Case 2: Only slug is present
         if (slug) {
             const shortURL = savedURLService(url, slug);
-            if (shortURL == 'Short URL already exists'){
-                return res.status(400).json({ error: "Short URL already exists" });
+            if (shortURL.status == 200) {
+            return res.json({ message:shortURL.message,status:shortURL.status,url:process.env.APP_URL+shortURL.url });
+
             }
-            return res.status(200).json({ url_short: process.env.APP_URL + shortURL });
+            return res.json({ message: "Short URL already exists",status:409});
         }
-        
+
         // Case 3: Only user ID is present
         if (userId) {
-            const shortURL = savedURLService(url, null, userId);
-            if (shortURL == 'Short URL already exists'){
-                return res.status(400).json({ error: "Short URL already exists" });
+          
+            const shortURL =await  savedURLService(url, null, userId);
+            
+            if (shortURL.status == 200) {
+                return res.json({ message:shortURL.message,status:shortURL.status,url:process.env.APP_URL+shortURL.url });
+
             }
-            return res.status(200).json({ url_short: process.env.APP_URL + shortURL });
+            return res.json({ message: "Short URL already exists",status:409 });
         }
-        
+
         // Default case: No slug, no user ID
-        const shortURL = savedURLService(url);
-            if (shortURL == 'Short URL already exists'){
-                return res.status(400).json({ error: "Short URL already exists" });
-            }
-            return res.status(200).json({ url_short: process.env.APP_URL + shortURL });
         
-    } catch(err) {
+        const shortURL = savedURLService(url);
+       
+        if (shortURL.status == 200) {
+            return res.json({ message:shortURL.message,status:shortURL.status,url:process.env.APP_URL+shortURL.url });
+
+        }
+        return res.json({ message: "Short URL already exists",status:409 });
+
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ error: "Internal server error" });
     }
@@ -76,14 +87,14 @@ export async function redirectURL(req, res) {
         const urlFind = await Url.findOneAndUpdate(
             { short_url: short_url.trim() }, // Trim whitespace
             { $inc: { clicks: 1 } },
-            { 
+            {
                 new: true,
                 maxTimeMS: 5000 // Timeout after 5 seconds
             }
         );
 
         console.log("Redirect attempt - Short URL:", short_url, "Found:", !!urlFind);
-        
+
         if (urlFind) {
             const destinationUrl = ensureProtocol(urlFind.original_url);
             console.log(`Redirecting to: ${destinationUrl}`);
@@ -96,7 +107,7 @@ export async function redirectURL(req, res) {
             message: 'URL not found',
             suggestion: 'Check if the short URL is correct'
         });
-        
+
     } catch (error) {
         console.error("Redirect error:", {
             error: error.message,
@@ -118,4 +129,30 @@ export async function redirectURL(req, res) {
         });
     }
 }
-    
+
+
+
+export const getAllURL = async (req, res) => {
+    try {
+        if (!req.user?._id) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const urls = await Url.find({ user_id: req.user._id }); // Fixed query
+        
+        res.status(200).json({
+            status: 200,
+            data: urls,
+            message: "URLs retrieved successfully"
+        });
+    } catch (err) {
+        console.error("Error in getAllURL:", err);
+        res.status(500).json({ 
+            status: 500,
+            error: "Internal server error",
+            details: err.message 
+        });
+    }
+}
+
+

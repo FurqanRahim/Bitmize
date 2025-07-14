@@ -13,10 +13,23 @@ import attachUser from "./src/utils/attachUser.js";
 const PORT = process.env.PORT
 const app = express()
 
-app.use(cors({
-  origin: true, // Reflects the request origin
-  credentials: true // If you need cookies/auth
-}))
+
+
+// Server-side CORS setup
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+
+// Explicit OPTIONS handler
+// app.options('*', cors(corsOptions));// app.options('*', cors());
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))

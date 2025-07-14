@@ -10,7 +10,8 @@ const emailExistDAO = async (email) => {
     try{
         const email_exist = await User.findOne({email});
         if(email_exist){
-            return "Email Already Exist"
+            
+            return {message: "Email Already Exist",status:409}
         }
     }catch(err){
         console.log(err)
@@ -21,7 +22,7 @@ const nameExistDAO = async (name) => {
     try{
         const name_exist = await User.findOne({name});
         if(name_exist){
-            return "User Already Exist"
+            return {message: "User Already Exist",status:409}
         }
         
     }catch(err){
@@ -42,7 +43,7 @@ const userCreatedDAO = async (name,email,password) => {
         
         
         
-        return "User created Successfully"   
+        return {message: "User created Successfully",status:200}   
         
     }catch(err){
         console.log(err)

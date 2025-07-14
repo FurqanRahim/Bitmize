@@ -28,6 +28,7 @@ const registerUserService = async (name,email,password) => {
 
 const loginUserService = async (email,password) => {
     try{
+        console.log("LOGIN SERVICE =>",email)
         const user = await User.findOne({email});
         if(!user){
             return "Invalid Credentials"

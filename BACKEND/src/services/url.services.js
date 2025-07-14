@@ -5,9 +5,12 @@ export default async function  savedURLService(url,slug,userID=null){
     try{
         const shortURL = slug || generateShortURL();
        
-        const short_url =await  saveURLDAO(shortURL,url,userID)
+       
+        const info =await  saveURLDAO(url,shortURL,userID);
         
-        return short_url
+        
+        return info
+        
 
     }catch(err){
         console.log(err)
