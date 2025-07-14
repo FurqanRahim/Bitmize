@@ -1,11 +1,11 @@
 import axiosInstance from "./api.instance.js";
 
 const Post = (url) =>{
-    return axiosInstance.post('/url/create',url)
+    return axiosInstance.post('/urls/create',url)
 }
 
 const getURLS = async  () => {
-    const response = await  axiosInstance.get('/url/get') 
+    const response = await  axiosInstance.get('/urls/get') 
     console.log("RESPONSE OF GET  URLS ========================================>",response)
     return response;
 }

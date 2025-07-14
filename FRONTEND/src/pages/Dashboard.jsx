@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FiCopy, FiLink, FiEdit2, FiCheck, FiBarChart2, FiClock, FiActivity, FiTrendingUp } from 'react-icons/fi';
+import { FiCopy, FiLink, FiEdit2, FiCheck, FiBarChart2, FiClock, FiActivity, FiTrendingUp, FiDownload } from 'react-icons/fi';
 import { Post, getURLS } from '../api/url.api.js';
-import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 const Dashboard = () => {
   const [originalUrl, setOriginalUrl] = useState('');
@@ -22,14 +22,14 @@ const Dashboard = () => {
           const sortedLinks = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
           });
-          
+
           // Calculate total clicks
           const clicksSum = sortedLinks.reduce((total, url) => total + url.clicks, 0);
           setTotalClicks(clicksSum);
-          
+
           const formattedLinks = sortedLinks.map((url) => ({
             id: url._id,
-            shortUrl: url.short_url,
+            shortUrl: `http://localhost:5000/api/url/${url.short_url}`,
             originalUrl: url.original_url,
             clicks: url.clicks,
             createdAt: new Date(url.createdAt).toLocaleDateString(),
@@ -60,7 +60,7 @@ const Dashboard = () => {
     setCopied(false);
     console.log("RESPONSE URL GET URLS DASHBOARD =======================================>")
     const getURL_Response = await getURLS()
-    console.log("RESPONSE URL GET URLS DASHBOARD =======================================>",getURL_Response.data)
+    console.log("RESPONSE URL GET URLS DASHBOARD =======================================>", getURL_Response.data)
 
     if (!originalUrl) return setError('Please enter a URL');
     if (!isValidUrl(originalUrl)) return setError('Please include http:// or https://');
@@ -82,14 +82,14 @@ const Dashboard = () => {
           const sortedLinks = newResponse.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
           });
-          
+
           // Calculate total clicks
           const clicksSum = sortedLinks.reduce((total, url) => total + url.clicks, 0);
           setTotalClicks(clicksSum);
-          
+
           const formattedLinks = sortedLinks.map((url) => ({
             id: url._id,
-            shortUrl: url.short_url,
+            shortUrl: `http://localhost:5000/api/url/${url.short_url}`,
             originalUrl: url.original_url,
             clicks: url.clicks,
             createdAt: new Date(url.createdAt).toLocaleDateString(),
@@ -113,6 +113,31 @@ const Dashboard = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const exportToExcel = () => {
+    // Prepare data for Excel export
+    const excelData = recentLinks.map(link => ({
+      'Short URL': link.shortUrl,
+      'Original URL': link.originalUrl,
+      'Clicks': link.clicks,
+      'Created Date': link.createdAt,
+      'Status': link.status
+    }));
+
+    // Create Excel file
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Recent Links");
+
+    // Export the workbook
+    XLSX.writeFile(workbook, "recent_links.xlsx", {
+      bookType: 'xlsx',
+      type: 'array'
+    });
+  };
+
 
   const stats = [
     { title: 'Total Shortened', value: recentLinks.length.toString(), icon: <FiLink className="text-blue-500" />, trend: '12% ↑' },
@@ -272,7 +297,15 @@ const Dashboard = () => {
         {/* Recent Links Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800">Recent Links</h2>
+            <div className="flex items-center">
+              <h2 className="text-lg font-semibold text-gray-800">Recent Links</h2>
+              <button
+                onClick={exportToExcel}
+                className="ml-4 flex items-center text-sm bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+              >
+                <FiDownload className="mr-1" /> Export to Excel
+              </button>
+            </div>
             <span className="text-sm text-gray-500">Showing {recentLinks.length} most recent links</span>
           </div>
           <div className="overflow-x-auto">
@@ -316,9 +349,8 @@ const Dashboard = () => {
                       {link.createdAt}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        link.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${link.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
                         {link.status}
                       </span>
                     </td>
