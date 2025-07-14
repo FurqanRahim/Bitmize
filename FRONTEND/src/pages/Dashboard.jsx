@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiCopy, FiLink, FiEdit2, FiCheck, FiBarChart2, FiClock, FiActivity, FiTrendingUp } from 'react-icons/fi';
 import { Post, getURLS } from '../api/url.api.js';
 import axios from 'axios';
@@ -10,6 +10,40 @@ const Dashboard = () => {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [recentLinks, setRecentLinks] = useState([]);
+  const [totalClicks, setTotalClicks] = useState(0);
+
+  useEffect(() => {
+    const fetchURLs = async () => {
+      try {
+        const response = await getURLS();
+        if (response.data.status === 200) {
+          // Sort by createdAt date in descending order (newest first)
+          const sortedLinks = response.data.data.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          });
+          
+          // Calculate total clicks
+          const clicksSum = sortedLinks.reduce((total, url) => total + url.clicks, 0);
+          setTotalClicks(clicksSum);
+          
+          const formattedLinks = sortedLinks.map((url) => ({
+            id: url._id,
+            shortUrl: url.short_url,
+            originalUrl: url.original_url,
+            clicks: url.clicks,
+            createdAt: new Date(url.createdAt).toLocaleDateString(),
+            status: 'Active'
+          }));
+          setRecentLinks(formattedLinks);
+        }
+      } catch (error) {
+        console.error('Error fetching URLs:', error);
+      }
+    };
+
+    fetchURLs();
+  }, []);
 
   const isValidUrl = (url) => {
     try {
@@ -26,14 +60,7 @@ const Dashboard = () => {
     setCopied(false);
     console.log("RESPONSE URL GET URLS DASHBOARD =======================================>")
     const getURL_Response = await getURLS()
-    // Add error logging to see full details
-    // axios.get('http://localhost:5000/api/url/get')
-    //   .then(response => { /* ... */ })
-    //   .catch(error => {
-    //     console.error('Full error:', error);
-    //     console.error('Request config:', error.config);
-    //   });
-    console.log("RESPONSE URL GET URLS DASHBOARD =======================================>")
+    console.log("RESPONSE URL GET URLS DASHBOARD =======================================>",getURL_Response.data)
 
     if (!originalUrl) return setError('Please enter a URL');
     if (!isValidUrl(originalUrl)) return setError('Please include http:// or https://');
@@ -41,20 +68,36 @@ const Dashboard = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
       console.log("ORIGINAL URL ============================> ", originalUrl);
       console.log("SLUG ============================> ", customSlug);
       const response = await Post({ url: originalUrl, slug: customSlug });
       console.log(response.data);
       setShortenedUrl(response.data.url);
       if (response.data.status == 200) {
-        // if response is 200 then display the shortened url
         setShortenedUrl(response.data.url);
-        // and also show the sucess message using response.data.message 
-
-
+        // Refresh the recent links after creating a new one
+        const newResponse = await getURLS();
+        if (newResponse.data.status === 200) {
+          // Sort by createdAt date in descending order (newest first)
+          const sortedLinks = newResponse.data.data.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          });
+          
+          // Calculate total clicks
+          const clicksSum = sortedLinks.reduce((total, url) => total + url.clicks, 0);
+          setTotalClicks(clicksSum);
+          
+          const formattedLinks = sortedLinks.map((url) => ({
+            id: url._id,
+            shortUrl: url.short_url,
+            originalUrl: url.original_url,
+            clicks: url.clicks,
+            createdAt: new Date(url.createdAt).toLocaleDateString(),
+            status: 'Active'
+          }));
+          setRecentLinks(formattedLinks);
+        }
       } else {
-        // show the error using response.data.message 
         setError(response.data.message);
       }
     } catch {
@@ -72,20 +115,11 @@ const Dashboard = () => {
   };
 
   const stats = [
-    { title: 'Total Shortened', value: '1,248', icon: <FiLink className="text-blue-500" />, trend: '12% ↑' },
-    { title: 'Clicks Today', value: '342', icon: <FiActivity className="text-green-500" />, trend: '5% ↑' },
-    { title: 'Active Links', value: '87', icon: <FiBarChart2 className="text-purple-500" />, trend: '3% ↓' },
-    { title: 'Top Link', value: 'example.com/s/abc123', icon: <FiTrendingUp className="text-orange-500" />, trend: '32% ↑' }
+    { title: 'Total Shortened', value: recentLinks.length.toString(), icon: <FiLink className="text-blue-500" />, trend: '12% ↑' },
+    { title: 'Total Clicks ', value: totalClicks.toString(), icon: <FiActivity className="text-green-500" />, trend: '5% ↑' },
+    { title: 'Active Links', value: recentLinks.length.toString(), icon: <FiBarChart2 className="text-purple-500" />, trend: '3% ↓' },
+    { title: 'Top Link', value: recentLinks[0]?.shortUrl || 'No links', icon: <FiTrendingUp className="text-orange-500" />, trend: '32% ↑' }
   ];
-
-  const recentLinks = [1, 2, 3].map(item => ({
-    id: item,
-    shortUrl: `example.com/s/abc${item}`,
-    originalUrl: `https://example.com/long-url/${item}`,
-    clicks: item * 12,
-    created: new Date(Date.now() - item * 86400000).toLocaleDateString(),
-    status: ['Active', 'Inactive', 'Active'][item - 1]
-  }));
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
@@ -93,7 +127,7 @@ const Dashboard = () => {
         {/* Header */}
         <header className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Short.ly</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Bitmize</h1>
             <p className="text-gray-500">URL Shortener Dashboard</p>
           </div>
           <div className="flex items-center space-x-4">
@@ -123,7 +157,6 @@ const Dashboard = () => {
                   {stat.icon}
                 </div>
               </div>
-
             </div>
           ))}
         </div>
@@ -240,6 +273,7 @@ const Dashboard = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="p-6 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800">Recent Links</h2>
+            <span className="text-sm text-gray-500">Showing {recentLinks.length} most recent links</span>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -253,6 +287,12 @@ const Dashboard = () => {
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Clicks
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Created
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
                   </th>
                 </tr>
               </thead>
@@ -272,6 +312,16 @@ const Dashboard = () => {
                         {link.clicks}
                       </span>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {link.createdAt}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        link.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}>
+                        {link.status}
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -280,7 +330,7 @@ const Dashboard = () => {
         </div>
 
         <footer className="mt-12 text-center text-sm text-gray-500 pb-8">
-          © {new Date().getFullYear()} Short.ly URL Shortener. All rights reserved.
+          © {new Date().getFullYear()} Bitmize URL Shortener. All rights reserved.
         </footer>
       </div>
     </div>
