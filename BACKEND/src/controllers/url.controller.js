@@ -65,43 +65,29 @@ export async function saveURL(req, res) {
 
 export async function redirectURL(req, res) {
     try {
+        console.log("REDIRECT URL CONTROLLER BACKEND")
         const { short_url } = req.params;
+        console.log("REDIRECT SHORT URL INTO THE ORIGINAL URLS ==================================>",short_url)
 
-        // Validate short_url parameter
-        if (!short_url || typeof short_url !== 'string' || short_url.trim().length === 0) {
-            console.error('Invalid short URL parameter:', short_url);
-            return res.status(400).json({
-                status: 400,
-                message: 'Invalid short URL parameter',
-            });
-        }
 
-        // Add protocol if missing from original URL
-        const ensureProtocol = (url) => {
-            if (!/^https?:\/\//i.test(url)) {
-                return `http://${url}`;
-            }
-            return url;
-        };
+
+        
 
         const urlFind = await Url.findOneAndUpdate(
-            { short_url: short_url.trim() }, // Trim whitespace
+            { short_url : short_url }, 
             { $inc: { clicks: 1 } },
             {
                 new: true,
-                maxTimeMS: 5000 // Timeout after 5 seconds
             }
         );
 
-        console.log("Redirect attempt - Short URL:", short_url, "Found:", !!urlFind);
+        console.log("URLFIND REDIRECT ===================>",urlFind)
 
         if (urlFind) {
-            const destinationUrl = ensureProtocol(urlFind.original_url);
-            console.log(`Redirecting to: ${destinationUrl}`);
-            return res.redirect(302, destinationUrl);
+            return res.redirect(302,urlFind.original_url);
         }
 
-        console.warn('Short URL not found:', short_url);
+       
         return res.status(404).json({
             status: 404,
             message: 'URL not found',

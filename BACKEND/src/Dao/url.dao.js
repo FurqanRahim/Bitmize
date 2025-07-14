@@ -9,7 +9,7 @@ export const saveURLDAO = async (long_url, short_url, user_id) => {
             return {message:"Short URL already exists",status:409}
         }
 
-        const confirm_short_url = process.env.APP_URL+short_url;
+        const confirm_short_url = short_url;
         
         
         const newURL = new Url({
