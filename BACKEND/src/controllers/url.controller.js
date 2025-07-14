@@ -138,15 +138,22 @@ export const getAllURL = async (req, res) => {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        const urls = await Url.find({ user_id: req.user._id }); // Fixed query
+        console.log("BACKEND GETALL URLS ================================>",req.user)
+        console.log("BACKEND GETALL URLS BY USER ID================================>",req.user)
+
+
+        const urls = await Url.find({user: req.user._id }); // Fixed query
+        console.log("GET ALL USER CONTROLLER of URLS BACKEND ===============================>",urls)
         
         res.status(200).json({
             status: 200,
             data: urls,
             message: "URLs retrieved successfully"
         });
+        console.log("URLS RETRIEVED SUCCESSFULLY BACKEND ==============================>")
     } catch (err) {
         console.error("Error in getAllURL:", err);
+        console.log("GETALLUSER ERROR RECEIEVED =======================================>")
         res.status(500).json({ 
             status: 500,
             error: "Internal server error",
