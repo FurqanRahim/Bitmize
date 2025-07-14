@@ -1,12 +1,10 @@
-import Homepage from "./pages/Homepage.jsx"
+import { Outlet } from '@tanstack/react-router';
+import HomePage from './pages/Homepage.jsx';
 
-
-const App = () => {
+export default function App() {
   return (
-     <>
-     <Homepage/>
-     </>
-  )
+   <>
+   <Outlet/>
+   </>
+  );
 }
-
-export default App

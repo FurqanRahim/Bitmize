@@ -9,6 +9,8 @@ export default defineConfig({
       tailwindcss(),
   ],
   server: {
+        
+     // Don't try other ports if this one is taken
     proxy: {
       '/api': {
         target: 'http://localhost:5000',
@@ -18,3 +20,5 @@ export default defineConfig({
     },
   },
 })
+
+
