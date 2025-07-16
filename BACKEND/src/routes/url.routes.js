@@ -1,10 +1,18 @@
 import express from "express";
-import { saveURL,redirectURL,getAllURL } from "../controllers/url.controller.js";
+import { saveURL,redirectURL,getAllURL, urlWithoutUser } from "../controllers/url.controller.js";
 
 
 const url_route = express.Router();
 
+console.log("URL ROUTE")
+
 url_route.post('/api/urls/create',saveURL); // Save URL
+
+console.log("API Created routes")
+
+url_route.post('/api/urls/create/without/user',urlWithoutUser);  // http://localhost:5000/api/urls/create/without/user
+
+console.log("API Created routes")
 
 url_route.get('/api/URL/:short_url',redirectURL); // Redirect to original URL
 

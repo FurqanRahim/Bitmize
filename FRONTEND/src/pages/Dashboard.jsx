@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiCopy, FiLink, FiEdit2, FiCheck, FiBarChart2, FiClock, FiActivity, FiTrendingUp, FiDownload } from 'react-icons/fi';
 import { Post, getURLS } from '../api/url.api.js';
+import { getCurrentUser } from "../api/auth.instance.js";
 import * as XLSX from 'xlsx';
 
 const Dashboard = () => {
@@ -12,6 +13,8 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [recentLinks, setRecentLinks] = useState([]);
   const [totalClicks, setTotalClicks] = useState(0);
+  const [name, setname] = useState()
+  const [profileImage, setprofileImage] = useState();
 
   useEffect(() => {
     const fetchURLs = async () => {
@@ -22,6 +25,12 @@ const Dashboard = () => {
           const sortedLinks = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
           });
+
+          const currentUser = await getCurrentUser();
+          console.log("PROFILE OF CURRENT USER", currentUser)
+
+          setname(currentUser.data.name);
+          setprofileImage(currentUser.data.avatar);
 
           // Calculate total clicks
           const clicksSum = sortedLinks.reduce((total, url) => total + url.clicks, 0);
@@ -96,6 +105,7 @@ const Dashboard = () => {
             status: 'Active'
           }));
           setRecentLinks(formattedLinks);
+
         }
       } else {
         setError(response.data.message);
@@ -159,9 +169,9 @@ const Dashboard = () => {
             <div className="hidden md:block">
               <div className="flex items-center space-x-2">
                 <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span className="text-blue-600 font-medium">JS</span>
+                  <img src={profileImage} alt="Profile Image" className="h-8 w-8 rounded-full" />
                 </div>
-                <span className="font-medium">John Smith</span>
+                <span className="font-medium">{name}</span>
               </div>
             </div>
           </div>

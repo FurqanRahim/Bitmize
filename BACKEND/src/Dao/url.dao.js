@@ -32,3 +32,31 @@ export const saveURLDAO = async (long_url, short_url, user_id) => {
 
     }
 };
+
+export const saveURLWithoutUserDAO = async (long_url, short_url) => {
+    try{
+        
+        const urlExist = await Url.findOne({short_url});
+        
+        if(urlExist){
+            return {message:"Short URL already exists",status:409}
+        }
+
+        const confirm_short_url = short_url;
+        
+        
+        const newURL = new Url({
+        original_url: long_url,
+        short_url: confirm_short_url
+    });
+
+    await newURL.save();
+    
+    return {message:" URL created Successfully",status:200,url:short_url}    
+
+    }catch(err){
+        console.log(err)
+        
+
+    }
+};

@@ -17,7 +17,7 @@ const app = express()
 
 // Server-side CORS setup
 const corsOptions = {
-  origin: 'http://localhost:5174',
+  origin: 'http://localhost:5173',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Authorization'],
@@ -38,6 +38,9 @@ app.use(attachUser)
 
 app.use(url_route);
 app.use(auth_route)
+
+
+console.log("NICE")
 
 
 app.listen(PORT,()=>{

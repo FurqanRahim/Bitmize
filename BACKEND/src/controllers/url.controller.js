@@ -1,7 +1,28 @@
 
-import savedURLService from "../services/url.services.js"
+import savedURLService, { savedURLWithoutUser } from "../services/url.services.js"
 import Url from "../models/url.model.js"
 
+
+export async function urlWithoutUser(req,res){
+    try {
+
+        console.log("api/urls/create/without/user")
+
+        console.log("URL WITHOUT USER RESPONSE OF URL BODY ========= api/urls/create/without/user ================>",req.body)
+        const url = req.body.url;
+        const slug = req.body.slug;
+        const shortURL = await savedURLWithoutUser(url, slug);
+        if (shortURL.status == 200) {
+            return res.json({ message:shortURL.message,status:shortURL.status,url:process.env.APP_URL+shortURL.url });
+
+        }
+        return res.json({ message: "Short URL already exists",status:409 });
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 export async function saveURL(req, res) {
     try {
@@ -124,19 +145,18 @@ export const getAllURL = async (req, res) => {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        console.log("BACKEND GETALL URLS ================================>",req.user)
-        console.log("BACKEND GETALL URLS BY USER ID================================>",req.user)
+
 
 
         const urls = await Url.find({user: req.user._id }); // Fixed query
-        console.log("GET ALL USER CONTROLLER of URLS BACKEND ===============================>",urls)
+
         
         res.status(200).json({
             status: 200,
             data: urls,
             message: "URLs retrieved successfully"
         });
-        console.log("URLS RETRIEVED SUCCESSFULLY BACKEND ==============================>")
+
     } catch (err) {
         console.error("Error in getAllURL:", err);
         console.log("GETALLUSER ERROR RECEIEVED =======================================>")

@@ -5,6 +5,8 @@ import  dashboardRoute  from "./dashboardroute.js";
 import HomeRoute from "./Homepage.js";
 import registerRoute from "./registerroute.js";
 import loginRoute from "./loginRoute.js";
+import withoutuserRoute from "./WITHOUTROUTE.js";
+import  {contactRoute}  from "./Contactroute.js";
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -16,4 +18,6 @@ export const routeTree = rootRoute.addChildren([
   HomeRoute,
   registerRoute,
   loginRoute,
+  withoutuserRoute,
+  contactRoute,
 ]);

@@ -55,8 +55,8 @@ const logout_user = async (req, res) => {
 const get_current_user = async (req, res) => {
     try {
         res.status(200).json(req.user);
-        console.log("GET CURRENT USER ===========================>",req.user)
-        console.log("REQ USER =>",req.user)
+        
+        
     } catch (error) {
         console.error("Current user error:", error);
         console.log("GET CURRENT USER ERROR")
