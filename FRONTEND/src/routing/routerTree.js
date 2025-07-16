@@ -7,6 +7,7 @@ import registerRoute from "./registerroute.js";
 import loginRoute from "./loginRoute.js";
 import withoutuserRoute from "./WITHOUTROUTE.js";
 import  {contactRoute}  from "./Contactroute.js";
+import {aboutRoute} from "./Aboutroute.js";
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -20,4 +21,5 @@ export const routeTree = rootRoute.addChildren([
   loginRoute,
   withoutuserRoute,
   contactRoute,
+  aboutRoute,
 ]);

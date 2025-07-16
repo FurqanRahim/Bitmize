@@ -43,12 +43,12 @@ const Header = () => {
               >
                 Home
               </Link>
-              <a 
-                href="#about" 
+              <Link 
+                to="/about" 
                 className="text-lg font-medium text-gray-900 hover:text-indigo-600 px-3 py-2 rounded-md transition-all"
               >
                 About
-              </a>
+              </Link>
               <Link 
                 to="/contact" 
                 className="text-lg font-medium text-gray-900 hover:text-indigo-600 px-3 py-2 rounded-md transition-all"
@@ -76,14 +76,14 @@ const Header = () => {
           <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm" />
           <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
             <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5">
+              <Link to="/" className="-m-1.5 p-1.5">
                 <span className="sr-only">Bitmize</span>
                 <img
                   alt="Bitmize logo"
                   src={logo}
                   className="h-32 w-auto"
                 />
-              </a>
+              </Link>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
@@ -96,43 +96,43 @@ const Header = () => {
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-gray-500/10">
                 <div className="space-y-2 py-6">
-                  <a
-                    href="#"
+                  <Link
+                    to="/"
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Home
-                  </a>
-                  <a
-                    href="#about"
+                  </Link>
+                  <Link
+                    to="/about"
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     About
-                  </a>
-                  <a
-                    href="#contact"
+                  </Link>
+                  <Link
+                    to="/contact"
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Contact Us
-                  </a>
+                  </Link>
                 </div>
                 <div className="py-6 space-y-2">
-                  <a
-                    href="#login"
+                  <Link
+                    to="/login"
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-gray-900 hover:bg-gray-50"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Login
-                  </a>
-                  <a
-                    href="#register"
+                  </Link>
+                  <Link
+                    to="/register"
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700 text-center"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Register
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
