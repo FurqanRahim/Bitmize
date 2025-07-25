@@ -169,7 +169,7 @@ const Contact = () => {
                             <div className="flex items-center">
                                 <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
                                 <div className="ml-4">
-                                    <h4 className="font-bold text-gray-800">Sarah Johnson</h4>
+                                    <h4 className="font-bold text-gray-800">Maria Rodriguez</h4>
                                     <p className="text-gray-600">CEO, DataSphere</p>
                                 </div>
                             </div>
@@ -192,7 +192,7 @@ const Contact = () => {
                             <div className="flex items-center">
                                 <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
                                 <div className="ml-4">
-                                    <h4 className="font-bold text-gray-800">Sarah Johnson</h4>
+                                    <h4 className="font-bold text-gray-800">James Wilson</h4>
                                     <p className="text-gray-600">CEO, CloudNex</p>
                                 </div>
                             </div>
