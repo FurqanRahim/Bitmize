@@ -42,9 +42,6 @@ const HeroSection = () => {
 
     try {
 
-
-
-
       console.log("RESPONSE OF HERO SECTION ===============================> STARTING")
       const response = await getUrlWithoutUser(originalUrl, customAlias)
       console.log("response ==+++___++++>>>>> ==> ", response)
@@ -52,6 +49,7 @@ const HeroSection = () => {
       if (response.data.status == 200) {
         setShortUrl(response.data.url);
       } else {
+        console.log("The console.log of Hero section is ",response.data.message)
         setError(response.data.message);
       }
       // setShortUrl(response.data.url);

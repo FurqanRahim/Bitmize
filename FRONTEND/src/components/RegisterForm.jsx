@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from '@tanstack/react-router';
 import { registerUser } from "../api/auth.instance.js";
 import { useNavigate } from '@tanstack/react-router';
+import Footer from './Footer.jsx';
+import Header from './Header.jsx';
 
 // Custom hook for form state and validation
 const useForm = () => {
@@ -152,8 +154,10 @@ const RegisterForm = () => {
   };
 
   return (
+    <div><Header/>
+
     <div className="min-h-screen flex flex-col justify-center bg-gray-50 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mt-26 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <div className="w-16 h-16 rounded-full flex items-center justify-center">
             {/* Your logo here */}
@@ -170,7 +174,7 @@ const RegisterForm = () => {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mt-8 mb-12 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow-lg sm:rounded-lg sm:px-10">
           {errors.api && (
             <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
@@ -369,15 +373,10 @@ const RegisterForm = () => {
         </div>
       </div>
 
-      <div className="mt-8 text-center text-xs text-gray-500">
-        <p>© {new Date().getFullYear()} Bitmize. All rights reserved.</p>
-        <div className="mt-2 flex justify-center space-x-4">
-          <a href="#" className="hover:text-gray-600">Privacy</a>
-          <a href="#" className="hover:text-gray-600">Terms</a>
-          <a href="#" className="hover:text-gray-600">Security</a>
-        </div>
+     <Footer/>
       </div>
     </div>
+   
   );
 };
 
