@@ -50,29 +50,7 @@ const Sidebar = ({
       </div>
     </div>
     
-    <nav className="mt-4">
-      <ul>
-        <li className="px-6 py-3 flex items-center text-blue-600 bg-blue-50 border-l-4 border-blue-500">
-          <FiHome className="mr-3" />
-          <span>Dashboard</span>
-        </li>
-        <li className="px-6 py-3 flex items-center text-gray-600 hover:bg-gray-100">
-          <FiUser className="mr-3" />
-          <span>My Profile</span>
-        </li>
-        <li className="px-6 py-3 flex items-center text-gray-600 hover:bg-gray-100">
-          <FiSettings className="mr-3" />
-          <span>Settings</span>
-        </li>
-        <li 
-          className="px-6 py-3 flex items-center text-gray-600 hover:bg-gray-100 cursor-pointer"
-          onClick={onLogout}
-        >
-          <FiLogOut className="mr-3" />
-          <span>Logout</span>
-        </li>
-      </ul>
-    </nav>
+   
   </div>
 );
 

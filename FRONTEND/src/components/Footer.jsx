@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
+
   const socialLinks = [
     {
       name: 'Facebook',
@@ -33,26 +33,91 @@ const Footer = () => {
     }
   ];
 
+  const navigationLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' },
+    { name: 'Login', href: '/login' },
+    { name: 'Register', href: '/register' },
+  ];
+
+  const legalLinks = [
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
+    { name: 'Cookie Policy', href: '/cookies' },
+  ];
+
   return (
     <footer className="bg-gray-50 border-t border-gray-200">
-      <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
-        <div className="flex justify-center space-x-6 md:order-2">
-          {socialLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-gray-400 hover:text-indigo-600 transition-colors duration-300"
-              aria-label={link.name}
-            >
-              {link.icon}
-            </a>
-          ))}
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          {/* Brand section */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-900">Bitmize</h3>
+            <p className="mt-4 text-sm text-black max-w-xs">
+              Shorten, manage, and track your URLs with our powerful yet simple URL shortening service.
+            </p>
+            <div className="mt-6 flex space-x-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-gray-400 hover:text-indigo-600 transition-colors duration-300"
+                  aria-label={link.name}
+                >
+                  {link.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation links */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 uppercase">Navigation</h3>
+            <ul className="mt-4 space-y-4">
+              {navigationLinks.map((item) => (
+                <li key={item.name}>
+                  <a
+                    href={item.href}
+                    className="text-black hover:text-indigo-600 transition-colors duration-300"
+                  >
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal links */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 uppercase">Legal</h3>
+            <ul className="mt-4 space-y-4">
+              {legalLinks.map((item) => (
+                <li key={item.name}>
+                  <a
+                    href={item.href}
+                    className="text-sm text-black hover:text-indigo-600 transition-colors duration-300"
+                  >
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-        
-        <div className="mt-8 md:order-1 md:mt-0">
-          <p className="text-center text-sm text-gray-500">
-            &copy; {currentYear} Bitmize, Inc. All rights reserved.
-          </p>
+
+        <div className="border-t border-gray-200 pt-8 md:flex md:items-center md:justify-between">
+          <div className="md:order-1">
+            <p className="text-center text-sm text-gray-500">
+              &copy; {currentYear} Bitmize, Inc. All rights reserved.
+            </p>
+          </div>
+
+          <div className="mt-8 flex justify-center space-x-6 md:order-2 md:mt-0">
+            <p className="text-sm text-gray-500">
+              v1.2.0
+            </p>
+          </div>
         </div>
       </div>
     </footer>
