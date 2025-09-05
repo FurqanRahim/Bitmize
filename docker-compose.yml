@@ -1,0 +1,42 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    image: ffurqanrahim/bitmize-backend:latest
+    container_name: backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_URL: mongodb://admin:secret@mongo:27017/url-shortner?authSource=admin
+      PORT: 5000
+      APP_URL: http://localhost:5000/api/url/
+      JWT_SECRET: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywicm9sZSI6InVzZXIiLCJpYXQiOjE2OTAwMDAwMDAsImV4cCI6MTY5MDAwMzYwMH0.abc123
+      JWT_OPTIONS: 7d
+      ROLE: user,admin
+    depends_on:
+      - mongo
+
+  frontend:
+    image: ffurqanrahim/bitmize-frontend:latest
+    container_name: frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:5000/api/url/
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
